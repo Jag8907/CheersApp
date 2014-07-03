@@ -40,4 +40,13 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+  
+  def create_a_user
+    user = User.create!(password: "biscuits", username: "testing_username")
+    visit new_session_url
+    fill_in "username", :with => user.username
+    fill_in "password", :with =>  user.password
+    click_on "Login"
+  end
+  
 end
