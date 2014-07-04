@@ -1,0 +1,9 @@
+<%= @goal.title %><br>
+Public: <%= @goal.public %><br>
+Completed: <%= @goal.completed %>
+
+<% if current_user.id == @goal.user_id %>
+
+<%= button_to "Completed", complete_goal_url(@goal), method: :patch %>
+  
+<% end %>

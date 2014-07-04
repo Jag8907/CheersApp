@@ -5,48 +5,42 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'capybara/rspec'
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-
-# Checks for pending migrations before tests are run.
-# If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
-
 RSpec.configure do |config|
-  # ## Mock Framework
-  #
-  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-  #
-  # config.mock_with :mocha
-  # config.mock_with :flexmock
-  # config.mock_with :rr
 
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
   config.use_transactional_fixtures = true
-
-  # If true, the base class of anonymous controllers will be inferred
-  # automatically. This will be the default behavior in future versions of
-  # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
-
-  # Run specs in random order to surface order dependencies. If you find an
-  # order dependency and want to debug it, you can fix the order by providing
-  # the seed, which is printed after each run.
-  #     --seed 1234
   config.order = "random"
   
-  def create_a_user
-    user = User.create!(password: "biscuits", username: "testing_username")
+  def create_a_user(name = "testing_username")
+    user = User.create!(password: "biscuits", username: name)
     visit new_session_url
     fill_in "username", :with => user.username
     fill_in "password", :with =>  user.password
     click_on "Login"
+  end
+  
+  def build_user(name = "testing_username")
+    User.create!(password: "biscuits", username: name )
+  end
+  
+  def build_goal(user_id, title, public = false, completed = false)
+    Goal.create!(
+      public: public, 
+      completed: completed, 
+      user_id: user_id, 
+      title: title
+      )
+  end
+  
+  def create_goal
+    user = User.last
+    visit new_user_goal_url(user)
+    fill_in "Title", :with => "titties"
+    check("Public")
+    click_button "Create Goal"
   end
   
 end

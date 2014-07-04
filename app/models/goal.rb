@@ -12,7 +12,8 @@
 #
 
 class Goal < ActiveRecord::Base
-  validates :user_id, :title, :completed, :public, presence: true
+  validates :user_id, :title, presence: true
+  validates :completed, :public, inclusion: [true, false]
   
   belongs_to :user
 end
